@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--
+    Author: Max Edward
+    Email: maxedwar@uat.edu
+    Wk10 Assignment, Assignment Name: UAT Space Program- we have SOUND!
+-->
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap"
+      rel="stylesheet"
+    />
+    <script src="class.js"></script>
+    <script src="dataLoader.js"></script>
+    <script src="countdown.js"></script>
+    <script src="playdice.js"></script>
+    <script src="audio.js"></script>
+    <title>UAT Space Program - Max E.</title>
+    <script>
+      //Creating necessary variables for Data Readout.
+      var theTime = new Date();
+      var tempTime = new Date();
+      var time_interval = 5000;
+      var last_iteration = 0;
+      var running = true;
+      var index = 0;
+      var timer;
+      //Puts data into array.
+      var data = getData();
+      //Function to load & display data.
+      function updateDisplay() {
+        theTime = new Date();
+        var timeRead = data[index].time_seconds;
+        if (timeRead >= 5) {
+          document.getElementById("data").rows["seconds"].innerHTML = dataRow(
+            "Time Elapsed",
+            data[index].time_seconds,
+            "seconds"
+          );
+          document.getElementById("data").rows["latitude"].innerHTML = dataRow(
+            "Latitude",
+            data[index].latitude,
+            " "
+          );
+          document.getElementById("data").rows["longitude"].innerHTML = dataRow(
+            "Longitude",
+            data[index].longitude,
+            " "
+          );
+          document.getElementById("data").rows["gpsSensorAlt"].innerHTML =
+            dataRow("GPS Sensor Altitude", data[index].gps_altitude, " ");
+          document.getElementById("data").rows["bmpSensorAlt"].innerHTML =
+            dataRow("BMP Sensor Altitude", data[index].bmpSensor_altitude, " ");
+          document.getElementById("data").rows["bmpSensorPres"].innerHTML =
+            dataRow("BMP Sensor Pressure", data[index].bmpSensor_pressure, " ");
+          document.getElementById("data").rows["bmpSensorTemp"].innerHTML =
+            dataRow("BMP Sensor Temperature", data[index].bmpSensor_temp, " ");
+          document.getElementById("data").rows["digiSensorTemp"].innerHTML =
+            dataRow("Digital Sensor Pressure", data[index].digSensor_temp, " ");
+          document.getElementById("data").rows["cssSensorTemp"].innerHTML =
+            dataRow("CSS Sensor Temperature", data[index].cssSensor_temp, " ");
+          document.getElementById("data").rows["cssSensorECO2"].innerHTML =
+            dataRow("CSS Sensor ECO2", data[index].cssSensor_eCO2, " ");
+          document.getElementById("data").rows["cssSensorTVOC"].innerHTML =
+            dataRow("CSS Sensor TVOC", data[index].cssSensor_TVOC, " ");
+          document.getElementById("data").rows["UV"].innerHTML = dataRow(
+            "UV",
+            data[index].UV,
+            " "
+          );
+          document.getElementById("data").rows["accelX"].innerHTML = dataRow(
+            "Acceleration X",
+            data[index].accelX,
+            " "
+          );
+          document.getElementById("data").rows["accelY"].innerHTML = dataRow(
+            "Acceleration Y",
+            data[index].accelY,
+            " "
+          );
+          document.getElementById("data").rows["accelZ"].innerHTML = dataRow(
+            "Acceleration Z",
+            data[index].accelZ,
+            " "
+          );
+          document.getElementById("data").rows["magneticX"].innerHTML = dataRow(
+            "Magnetic X",
+            data[index].magnetX,
+            " "
+          );
+          document.getElementById("data").rows["magneticY"].innerHTML = dataRow(
+            "Magnetic Y",
+            data[index].magnetY,
+            " "
+          );
+          document.getElementById("data").rows["magneticZ"].innerHTML = dataRow(
+            "Magnetic Z",
+            data[index].magnetZ,
+            " "
+          );
+          document.getElementById("data").rows["gyroX"].innerHTML = dataRow(
+            "Gyro X",
+            data[index].gyroX,
+            " "
+          );
+          document.getElementById("data").rows["gyroY"].innerHTML = dataRow(
+            "Gyro Y",
+            data[index].gyroY,
+            " "
+          );
+          document.getElementById("data").rows["gyroZ"].innerHTML = dataRow(
+            "Gyro Z",
+            data[index].gyroZ,
+            " "
+          );
+          if (index < 500) {
+            index++;
+          } else {
+            index = 0;
+          }
+        }
+        console.log(
+          "The Current Time Is: " +
+            theTime.getHours() +
+            ":" +
+            theTime.getMinutes() +
+            ":" +
+            theTime.getSeconds()
+        );
+      }
+    </script>
+  </head>
+  <body>
+    <div class="audio">
+      <button id="startaudio" class="button" onclick="playAudio();">Play Audio</button>
+      <br />
+      <br />
+      <button id="stopaudio" class="button" onclick="stopAudio();">Stop Audio</button>
+    </div>
+    <br />
+    <div style="text-align: center">
+      <img class="logo" src="UATspaceLogo.jpg" alt="UAT Space Logo" />
+      <br />
+      <h1 class="title">UAT Space Program</h1>
+      <img class="profpic" src="Skelly.png" alt="Max Edward" />
+      <p class="text" style="padding: 10px">
+        Welcome to the UAT Space Webpage. <br /> Please click Start to begin the
+        countdown procedure.
+      </p>
+    </div>
+    <div style="text-align: center" class="text">
+      <p>Countdown Status:</p>
+      <p id="countdownstatus">Waiting For Start...</p>
+    </div>
+    <br />
+    <div style="text-align: center">
+      <button
+        id="startbutton"
+        class="button"
+        onclick="start(); countdowntimer()"
+      >
+        START
+      </button>
+      <button id="stopbutton" class="button" onclick="stop()">STOP</button>
+    </div>
+    <br />
+    <script>
+      var fallLaunch = new Mission(
+        100, //fuelLevel
+        100, //oxygenLevel
+        100, //foodLevel
+        "Endurance", //SpaceCraft
+        15, //launchDateDay
+        "October", //launchDateMonth
+        2022, //launchDateYear
+        5 //numAstronauts
+      );
+      var springLaunch = new Mission(
+        79, //fuelLevel
+        50, //oxygenLevel
+        92, //foodLevel
+        "Ranger", //SpaceCraft
+        12, //launchDateDay
+        "April", //launchDateMonth
+        2023, //launchDateYear
+        2 //numAstronauts
+      );
+    </script>
+    <div style="text-align: center">
+      <button class="button" onclick="launchFall();">Fall Launch</button>
+      <button class="button" onclick="displayFall()">Fall Display</button>
+    </div>
+    <br />
+    <br />
+    <div>
+      <center>
+        <table id="data" style="padding: 10px">
+          <thead>
+            <tr>
+              <th>Data Type</th>
+              <th>Measurement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="seconds"></tr>
+            <tr id="latitude"></tr>
+            <tr id="longitude"></tr>
+            <tr id="gpsSensorAlt"></tr>
+            <tr id="bmpSensorAlt"></tr>
+            <tr id="bmpSensorPres"></tr>
+            <tr id="bmpSensorTemp"></tr>
+            <tr id="digiSensorTemp"></tr>
+            <tr id="cssSensorTemp"></tr>
+            <tr id="cssSensorECO2"></tr>
+            <tr id="cssSensorTVOC"></tr>
+            <tr id="UV"></tr>
+            <tr id="accelX"></tr>
+            <tr id="accelY"></tr>
+            <tr id="accelZ"></tr>
+            <tr id="magneticX"></tr>
+            <tr id="magneticY"></tr>
+            <tr id="magneticZ"></tr>
+            <tr id="gyroX"></tr>
+            <tr id="gyroY"></tr>
+            <tr id="gyroZ"></tr>
+          </tbody>
+        </table>
+        <br />
+        <!-- Below is code for current time. We never finished refining this code. 
+          <div class="text">
+          The Current Time is:
+          <div id="time"></div>
+        </div>
+        -->
+      </center>
+    </div>
+    <!-- Below is code for Dice Game-->
+    <div class="textbackdropstatus"></div>
+    <div class="roll">
+      <p>Die Status</p>
+      <p id="die1status">Waiting For Start...</p>
+      <p id="die2status">Waiting For Start...</p>
+      <p id="diceresult">Dice Result</p>
+    </div>
+    <div class="roll">
+      <button
+        class="button"
+        style="position: fixed; left: 160px; bottom: 80px"
+        onclick="playdice()"
+      >
+        Roll the Dice!
+      </button>
+    </div>
+    <div class="textbackdropsum"></div>
+    <div class="sum">
+      Dice Sum
+      <p id="dicesum">Waiting For Start...</p>
+      <p id="wins">You Have Won <div id="winstatus">0</div>times.</p>
+      <p id="losses">You Have Lost <div id="losestatus">0</div>times.</p>
+    </div>
+  </body>
+</html>

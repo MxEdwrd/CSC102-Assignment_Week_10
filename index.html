@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!--
+    Author: Max Edward
+    Email: maxedwar@uat.edu
+    Refer to UATSpaceHome.html for Assignment
+-->
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap"
+      rel="stylesheet"
+    />
+    <script src="login.js"></script>
+    <title>Please Login to Proceed</title>
+  </head>
+  <br />
+  <br />
+  <br />
+  <body>
+    <div style="text-align: center">
+      <p class="text">
+        Welcome to the UAT Space Webpage. Please login to proceed.
+      </p>
+      <p id="loginstatus" class="text">Status of login...</p>
+      <br />
+      <form id="creditsubmit" onsubmit="return false" class="text">
+        First Name: <input type="text" id="f_name" /> Last Name:
+        <input type="text" id="l_name" /> Badge ID:
+        <input type="number" id="badgeid" />
+        <br />
+        <br />
+        <button class="button" onclick="checkcredit()">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>
